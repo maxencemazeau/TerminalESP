@@ -17,6 +17,10 @@
 WiFiManager wm;
 #define WEBSERVER_H
 
+#define LED_PIN 27 // Replace with the pin number connected to the LED
+
+
+
 const char *mqtt_server = "172.16.5.100";
 const char *mqtt_username = "mams";
 const char *mqtt_password = "mams";
@@ -31,6 +35,8 @@ Adafruit_MQTT_Client mqtt(&client, mqtt_server, mqtt_port, mqtt_username, mqtt_p
 Adafruit_MQTT_Publish topic_publish_CO2 = Adafruit_MQTT_Publish(&mqtt, "CO2");
 
 Adafruit_MQTT_Publish topic_publish_GAZ = Adafruit_MQTT_Publish(&mqtt, "GAZ");
+
+Adafruit_MQTT_Subscribe topic_subscribe = Adafruit_MQTT_Subscribe(&mqtt, "CO2_received");
 
 
 char buffer1[64];
@@ -92,7 +98,22 @@ char strToPrint[128];
       Serial.println("Could not connect to MQTT broker. Retrying...");
      
     }
+
+     pinMode(LED_PIN, OUTPUT);
+
   
+  
+}
+
+void subscribeToTopic(Adafruit_MQTT_Subscribe* topic) {
+  if (mqtt.subscribe(topic)) {
+    Serial.print(F("Subscribed to topic: "));
+    Serial.println(topic->topic);
+    digitalWrite(LED_PIN, LOW);
+
+  } else {
+    Serial.println(F("Failed to subscribe to topic"));
+  }
 }
 
 void loop() {
@@ -126,6 +147,9 @@ void loop() {
   Serial.println(gas_ppm);
   sprintf(buffer2, "%d", gas_ppm);
   topic_publish_GAZ.publish(buffer2);
+
+  subscribeToTopic(&topic_subscribe);
+
 
   delay(3000);
 }
