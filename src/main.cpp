@@ -1,3 +1,19 @@
+/* Copyright (C) 2023 Maxence MAZEAU
+ * All rights reserved.
+ *
+ * Projet Qualite de l'air
+ * Ecole du Web
+ * Projet technologique (c)2023
+ *  
+
+    Historique des versions
+           Version    Date       Auteur       Description
+           1.1        05/08/21  Maxence     Première version
+           1.2                  Maxence     Deuxième version
+           1.3       30/40/2023 Maxence     Troisième version
+   
+ * */
+
 #include <iostream>
 #include<string>
 #include<sstream> // for using stringstream
@@ -36,13 +52,13 @@ Adafruit_MQTT_Publish topic_publish_CO2 = Adafruit_MQTT_Publish(&mqtt, "CO2");
 
 Adafruit_MQTT_Publish topic_publish_GAZ = Adafruit_MQTT_Publish(&mqtt, "GAZ");
 
-Adafruit_MQTT_Subscribe topic_subscribe = Adafruit_MQTT_Subscribe(&mqtt, "CO2_received");
-
+Adafruit_MQTT_Subscribe topic_subscribe = Adafruit_MQTT_Subscribe(&mqtt, "niveauCO2");
 
 char buffer1[64];
 char buffer2[64];
 char buffer3[64];
 float val1, val2;
+std::string message;
 
 CCS811 ccs811(23);
 
@@ -54,6 +70,12 @@ String ssIDRandom;
 void setup() {
   Serial.begin(9600);
   Wire.begin();
+
+  // Set static IP address
+  IPAddress staticIP(172, 16, 6, 140);
+  IPAddress gateway(172,16,4,2);
+  IPAddress subnet(255,255,252,0);
+  WiFi.config(staticIP, gateway, subnet);
 
   // Enable CCS811
   bool ok = ccs811.begin();
@@ -99,24 +121,18 @@ char strToPrint[128];
      
     }
 
+
+
      pinMode(LED_PIN, OUTPUT);
 
-  
-  
-}
+     digitalWrite(LED_PIN, LOW);
 
-void subscribeToTopic(Adafruit_MQTT_Subscribe* topic) {
-  if (mqtt.subscribe(topic)) {
-    Serial.print(F("Subscribed to topic: "));
-    Serial.println(topic->topic);
-    digitalWrite(LED_PIN, LOW);
 
-  } else {
-    Serial.println(F("Failed to subscribe to topic"));
-  }
+
 }
 
 void loop() {
+
 
   // Read
   uint16_t eco2, etvoc, errstat, raw;
@@ -148,8 +164,6 @@ void loop() {
   sprintf(buffer2, "%d", gas_ppm);
   topic_publish_GAZ.publish(buffer2);
 
-  subscribeToTopic(&topic_subscribe);
 
-
-  delay(3000);
+  delay(5000);
 }
