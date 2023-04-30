@@ -52,7 +52,6 @@ Adafruit_MQTT_Publish topic_publish_CO2 = Adafruit_MQTT_Publish(&mqtt, "CO2");
 
 Adafruit_MQTT_Publish topic_publish_GAZ = Adafruit_MQTT_Publish(&mqtt, "GAZ");
 
-Adafruit_MQTT_Subscribe topic_subscribe = Adafruit_MQTT_Subscribe(&mqtt, "niveauCO2");
 
 char buffer1[64];
 char buffer2[64];
@@ -116,9 +115,10 @@ char strToPrint[128];
   
     if (mqtt.connect()) {
       Serial.println("Connected to MQTT broker");
+     
     } else {
       Serial.println("Could not connect to MQTT broker. Retrying...");
-     
+    
     }
 
 
@@ -131,8 +131,8 @@ char strToPrint[128];
 
 }
 
-void loop() {
 
+void loop() {
 
   // Read
   uint16_t eco2, etvoc, errstat, raw;
