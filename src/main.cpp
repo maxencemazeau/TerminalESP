@@ -43,10 +43,10 @@ const int mqtt_port = 1883;
 
 WiFiClient client;
 
-// Create an instance of the Adafruit MQTT client
+//Créer une instance mqtt
 Adafruit_MQTT_Client mqtt(&client, mqtt_server, mqtt_port, mqtt_username, mqtt_password);
 
-// Create a MQTT topic for publishing
+//MQTT topic pour le publish
 Adafruit_MQTT_Publish topic_publish_CO2 = Adafruit_MQTT_Publish(&mqtt, "CO2");
 
 Adafruit_MQTT_Publish topic_publish_GAZ = Adafruit_MQTT_Publish(&mqtt, "GAZ");
@@ -69,15 +69,15 @@ void setup() {
   Serial.begin(9600);
   Wire.begin();
 
-  // Set static IP address
+  //Ip static
   IPAddress staticIP(172, 16, 6, 140);
   IPAddress gateway(172,16,4,2);
   IPAddress subnet(255,255,252,0);
   WiFi.config(staticIP, gateway, subnet);
 
-  // Enable CCS811
+
   bool ok = ccs811.begin();
-  // Start measuring
+
   ok = ccs811.start(CCS811_MODE_1SEC);
   
 
