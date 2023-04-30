@@ -33,7 +33,6 @@
 WiFiManager wm;
 #define WEBSERVER_H
 
-#define LED_PIN 27 // Replace with the pin number connected to the LED
 
 
 
@@ -78,11 +77,9 @@ void setup() {
 
   // Enable CCS811
   bool ok = ccs811.begin();
-  if ( !ok ) Serial.println("setup: CCS811 begin FAILED");
-
   // Start measuring
   ok = ccs811.start(CCS811_MODE_1SEC);
-  if ( !ok ) Serial.println("setup: CCS811 start has FAILED");
+  
 
 
   //Connection au WifiManager
@@ -115,10 +112,8 @@ char strToPrint[128];
   
     if (mqtt.connect()) {
       Serial.println("Connected to MQTT broker");
-     
     } else {
-      Serial.println("Could not connect to MQTT broker. Retrying...");
-    
+      Serial.println("Could not connect to MQTT broker. Retrying...");   
     }
 
 
@@ -143,15 +138,9 @@ void loop() {
   {
     val1 = eco2;
     val2 = etvoc;
- 
-    Serial.print("eco2=");
-    Serial.print(val1);
-    Serial.print(" ppm  ");
 
     // Convert the value to a char array
     sprintf(buffer1, "%f", val1);
-    Serial.println("Buffer1 :");
-    Serial.println(buffer1);
     topic_publish_CO2.publish(buffer1);
  
 
@@ -159,8 +148,6 @@ void loop() {
 
   // Read gas level from sensor
   int gas_ppm = analogRead(GAS_SENSOR);
-  Serial.println("Gaz");
-  Serial.println(gas_ppm);
   sprintf(buffer2, "%d", gas_ppm);
   topic_publish_GAZ.publish(buffer2);
 
