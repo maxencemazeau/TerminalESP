@@ -115,15 +115,6 @@ char strToPrint[128];
     } else {
       Serial.println("Could not connect to MQTT broker. Retrying...");   
     }
-
-
-
-     pinMode(LED_PIN, OUTPUT);
-
-     digitalWrite(LED_PIN, LOW);
-
-
-
 }
 
 
